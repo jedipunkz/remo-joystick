@@ -7,7 +7,7 @@ import (
 	"github.com/tenntenn/natureremo"
 )
 
-func getAppliance(ctx context.Context, cli *natureremo.Client, name string) (*natureremo.Appliance, error) {
+func GetAppliance(ctx context.Context, cli *natureremo.Client, name string) (*natureremo.Appliance, error) {
 	as, err := cli.ApplianceService.GetAll(ctx)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func getAppliance(ctx context.Context, cli *natureremo.Client, name string) (*na
 	return nil, errors.New("appliance not found")
 }
 
-func getSignal(ss []*natureremo.Signal, name string) *natureremo.Signal {
+func GetSignal(ss []*natureremo.Signal, name string) *natureremo.Signal {
 	for _, s := range ss {
 		if s.Name == name {
 			return s
