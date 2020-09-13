@@ -5,11 +5,10 @@ import (
 	"log"
 	"os"
 
-	"remo-joystick/pkg/remo"
+	myremo "remo-joystick/pkg/remo"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
-	"github.com/tenntenn/natureremo"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/platforms/joystick"
 	"golang.org/x/net/context"
@@ -19,11 +18,6 @@ const (
 	confFile = ".remo-joystick"
 	platform = "xbox360"
 )
-
-// Remo is struct for communicating to Natureremo API
-type Remo struct {
-	client *natureremo.Client
-}
 
 // Buttons is struct controller pad buttons
 type Buttons struct {
@@ -35,13 +29,6 @@ type Buttons struct {
 	XButtonSignal    string
 	YButtonAppliance string
 	YButtonSignal    string
-}
-
-// NewRemo is contstructor for Nature Remo API
-func NewRemo(token string) *Remo {
-	api := new(Remo)
-	api.client = natureremo.NewClient(token)
-	return api
 }
 
 // NewButtons is contstructor for Controller Pad's Buttons
@@ -77,7 +64,8 @@ func init() {
 func main() {
 	token := viper.GetString("token")
 
-	cli := NewRemo(token).client
+	r := myremo.NewRemo(token)
+	cli := r.cleint
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
@@ -87,25 +75,25 @@ func main() {
 
 	work := func() {
 		stick.On(joystick.APress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx,
+			if err := r.SendSignal(cli, ctx,
 				button.AButtonAppliance, button.AButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.BPress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx,
+			if err := r.SendSignal(cli, ctx,
 				button.AButtonAppliance, button.AButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.XPress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx,
+			if err := r.SendSignal(cli, ctx,
 				button.XButtonAppliance, button.XButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.YPress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx,
+			if err := r.SendSignal(cli, ctx,
 				button.YButtonAppliance, button.YButtonSignal); err != nil {
 				log.Fatal(err)
 			}

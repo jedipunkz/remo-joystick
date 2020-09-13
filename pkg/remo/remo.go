@@ -1,4 +1,4 @@
-package remo
+package myremo
 
 import (
 	"context"
@@ -8,45 +8,51 @@ import (
 	"github.com/tenntenn/natureremo"
 )
 
-func GetAppliance(ctx context.Context, cli *natureremo.Client, name string) (*natureremo.Appliance, error) {
-	as, err := cli.ApplianceService.GetAll(ctx)
+// Remo is struct for communicating to Natureremo API
+type Remo struct {
+	client    *natureremo.Client
+	signal    *natureremo.Signal
+	appliance *natureremo.Appliance
+}
+
+// NewRemo is contstructor for Nature Remo API
+func NewRemo(token string) *Remo {
+	remo := new(Remo)
+	remo.client = natureremo.NewClient(token)
+	return remo
+}
+
+// GetAppliance is function to getting all of appliances
+func (r *Remo) GetAppliance(ctx context.Context, cli *natureremo.Client, name string) (*Remo, error) {
+	appliances, err := cli.ApplianceService.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, a := range as {
+	for _, a := range appliances {
 		if a.Nickname == name {
-			return a, nil
+			r.appliance = a
+			return r, nil
 		}
 	}
 
 	return nil, errors.New("appliance not found")
 }
 
-func GetSignal(ss []*natureremo.Signal, name string) *natureremo.Signal {
+// GetSignal is function to getting Signal
+func (r *Remo) GetSignal(ss []*natureremo.Signal, name string) (*Remo, error) {
 	for _, s := range ss {
 		if s.Name == name {
-			return s
+			r.signal = s
+			return r, nil
 		}
 	}
-	return nil
+	return nil, errors.New("Signal Not Found.")
 }
 
-func SendSignal(cli *natureremo.Client, ctx context.Context, apl, sig string) error {
-	a, err := GetAppliance(ctx, cli, apl)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-
-	s := GetSignal(a.Signals, sig)
-	if s == nil {
-		var errNotFound = errors.New("Signal Not Found")
-		log.Fatal("signal which you specified not found.")
-		return errNotFound
-	}
-
-	if err := cli.SignalService.Send(ctx, s); err != nil {
+// SendSignal is function to sending signal to remo API
+func (r *Remo) SendSignal(cli *natureremo.Client, ctx context.Context, apl, sig string) error {
+	if err := cli.SignalService.Send(ctx, r.signal); err != nil {
 		log.Fatal(err)
 		return err
 	}
