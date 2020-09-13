@@ -13,4 +13,30 @@ No need to talk to Alexa. Remo-Joystick make you enable to controll natureremo d
 ```bash
 $ go get github.com/jedipunkz/remo-joustick.git
 ```
+## Setup $HOME/.remo-joystick.yaml file as follow
 
+```yaml
+token: <YOUR_NATUREREMO_TOKEN_HERE>
+AButton:
+  apl: <YOUR_APPLIANCE_NAME>
+  sig: <YOUR_SIGNAL_NAME>
+BButton:
+  apl: <YOUR_APPLIANCE_NAME>
+  sig: <YOUR_SIGNAL_NAME>
+XButton:
+  apl: <YOUR_APPLIANCE_NAME>
+  sig: <YOUR_SIGNAL_NAME>
+YButton:
+  apl: <YOUR_APPLIANCE_NAME>
+  sig: <YOUR_SIGNAL_NAME>
+```
+
+## Boot Process
+
+```bash
+$ remo-joystick
+```
+
+## TODO: Dockerize
+
+when i can,i will.
