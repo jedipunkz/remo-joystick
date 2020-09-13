@@ -65,7 +65,6 @@ func main() {
 	token := viper.GetString("token")
 
 	r := myremo.NewRemo(token)
-	cli := r.Client
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
@@ -75,26 +74,50 @@ func main() {
 
 	work := func() {
 		stick.On(joystick.APress, func(data interface{}) {
-			if err := r.SendSignal(cli, ctx,
-				button.AButtonAppliance, button.AButtonSignal); err != nil {
+			if err := r.GetAppliance(ctx, button.AButtonAppliance); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.GetSignal(r.Appliance.Signals, button.AButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.SendSignal(ctx); err != nil {
+				fmt.Println(err)
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.BPress, func(data interface{}) {
-			if err := r.SendSignal(cli, ctx,
-				button.AButtonAppliance, button.AButtonSignal); err != nil {
+			if err := r.GetAppliance(ctx, button.BButtonAppliance); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.GetSignal(r.Appliance.Signals, button.BButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.SendSignal(ctx); err != nil {
+				fmt.Println(err)
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.XPress, func(data interface{}) {
-			if err := r.SendSignal(cli, ctx,
-				button.XButtonAppliance, button.XButtonSignal); err != nil {
+			if err := r.GetAppliance(ctx, button.XButtonAppliance); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.GetSignal(r.Appliance.Signals, button.XButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.SendSignal(ctx); err != nil {
+				fmt.Println(err)
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.YPress, func(data interface{}) {
-			if err := r.SendSignal(cli, ctx,
-				button.YButtonAppliance, button.YButtonSignal); err != nil {
+			if err := r.GetAppliance(ctx, button.YButtonAppliance); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.GetSignal(r.Appliance.Signals, button.YButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+			if err := r.SendSignal(ctx); err != nil {
+				fmt.Println(err)
 				log.Fatal(err)
 			}
 		})

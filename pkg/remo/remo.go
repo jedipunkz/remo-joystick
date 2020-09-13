@@ -23,36 +23,42 @@ func NewRemo(token string) *Remo {
 }
 
 // GetAppliance is function to getting all of appliances
-func (r *Remo) GetAppliance(ctx context.Context, cli *natureremo.Client, name string) (*Remo, error) {
-	appliances, err := cli.ApplianceService.GetAll(ctx)
+func (r *Remo) GetAppliance(ctx context.Context, name string) error {
+	appliances, err := r.Client.ApplianceService.GetAll(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for _, a := range appliances {
 		if a.Nickname == name {
 			r.Appliance = a
-			return r, nil
+			return nil
 		}
 	}
 
-	return nil, errors.New("appliance not found")
+	return errors.New("appliance not found")
 }
 
 // GetSignal is function to getting Signal
-func (r *Remo) GetSignal(ss []*natureremo.Signal, name string) (*Remo, error) {
+func (r *Remo) GetSignal(ss []*natureremo.Signal, name string) error {
 	for _, s := range ss {
 		if s.Name == name {
 			r.Signal = s
-			return r, nil
+			return nil
 		}
 	}
-	return nil, errors.New("Signal Not Found.")
+	return errors.New("Signal Not Found.")
 }
 
 // SendSignal is function to sending signal to remo API
-func (r *Remo) SendSignal(cli *natureremo.Client, ctx context.Context, apl, sig string) error {
-	if err := cli.SignalService.Send(ctx, r.Signal); err != nil {
+func (r *Remo) SendSignal(ctx context.Context) error {
+	// if err := r.Client.SignalService.Send(ctx, r.Signal); err != nil {
+	// err := r.Client.SignalService.Send(ctx, r.Signal)
+	// if err != nil {
+
+	// if err := remo.SendSignal(cli, ctx,
+	// 			button.AButtonAppliance, button.AButtonSignal); err != nil {
+	if err := r.Client.SignalService.Send(ctx, r.Signal); err != nil {
 		log.Fatal(err)
 		return err
 	}
