@@ -17,6 +17,7 @@ import (
 
 const (
 	confFile = ".remo-joystick"
+	platform = "xbox360"
 )
 
 // Remo is struct for communicating to Natureremo API
@@ -72,7 +73,7 @@ func main() {
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
-	stick := joystick.NewDriver(joystickAdaptor, "xbox360")
+	stick := joystick.NewDriver(joystickAdaptor, platform)
 
 	button := NewButtons()
 
