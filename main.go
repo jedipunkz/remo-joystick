@@ -1,12 +1,12 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/jedipunkz/remo-joystick/pkg/remo"
+	"remo-joystick/pkg/remo"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"github.com/tenntenn/natureremo"
@@ -51,12 +51,12 @@ func main() {
 
 	work := func() {
 		stick.On(joystick.APress, func(data interface{}) {
-			if err := remoSend(cli, ctx, aApl, aSig); err != nil {
+			if err := remo.SendSignal(cli, ctx, aApl, aSig); err != nil {
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.BPress, func(data interface{}) {
-			if err := remoSend(cli, ctx, bApl, bSig); err != nil {
+			if err := remo.SendSignal(cli, ctx, bApl, bSig); err != nil {
 				log.Fatal(err)
 			}
 		})
@@ -68,26 +68,4 @@ func main() {
 		work,
 	)
 	robot.Start()
-}
-
-func remoSend(cli *natureremo.Client, ctx context.Context, apl, sig string) error {
-	a, err := remo.GetAppliance(ctx, cli, apl)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-
-	s := remo.GetSignal(a.Signals, sig)
-	if s == nil {
-		var errNotFound = errors.New("Signal Not Found")
-		log.Fatal("signal which you specified not found.")
-		return errNotFound
-	}
-
-	if err := cli.SignalService.Send(ctx, s); err != nil {
-		log.Fatal(err)
-		return err
-	}
-
-	return nil
 }
