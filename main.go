@@ -15,6 +15,10 @@ import (
 	"golang.org/x/net/context"
 )
 
+const (
+	confFile = ".remo-joystick"
+)
+
 func init() {
 	home, err := homedir.Dir()
 	if err != nil {
@@ -23,7 +27,7 @@ func init() {
 	}
 
 	viper.AddConfigPath(home)
-	viper.SetConfigName(".remo-joystick")
+	viper.SetConfigName(confFile)
 
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err == nil {
