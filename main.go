@@ -20,7 +20,7 @@ func init() {
 	}
 
 	viper.AddConfigPath(home)
-	viper.SetConfigName(".remo-controller")
+	viper.SetConfigName(".remo-joystick")
 }
 
 func main() {
