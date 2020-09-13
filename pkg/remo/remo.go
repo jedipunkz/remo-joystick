@@ -3,6 +3,7 @@ package remo
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/tenntenn/natureremo"
 )
@@ -28,5 +29,27 @@ func GetSignal(ss []*natureremo.Signal, name string) *natureremo.Signal {
 			return s
 		}
 	}
+	return nil
+}
+
+func SendSignal(cli *natureremo.Client, ctx context.Context, apl, sig string) error {
+	a, err := GetAppliance(ctx, cli, apl)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	s := GetSignal(a.Signals, sig)
+	if s == nil {
+		var errNotFound = errors.New("Signal Not Found")
+		log.Fatal("signal which you specified not found.")
+		return errNotFound
+	}
+
+	if err := cli.SignalService.Send(ctx, s); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
 	return nil
 }
