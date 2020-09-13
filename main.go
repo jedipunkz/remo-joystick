@@ -31,6 +31,10 @@ type Buttons struct {
 	AButtonSignal    string
 	BButtonAppliance string
 	BButtonSignal    string
+	XButtonAppliance string
+	XButtonSignal    string
+	YButtonAppliance string
+	YButtonSignal    string
 }
 
 // NewRemo is contstructor for Nature Remo API
@@ -47,6 +51,10 @@ func NewButtons() *Buttons {
 	buttons.AButtonSignal = viper.GetString("AButton.sig")
 	buttons.BButtonAppliance = viper.GetString("BButton.apl")
 	buttons.BButtonSignal = viper.GetString("BButton.sig")
+	buttons.XButtonAppliance = viper.GetString("XButton.apl")
+	buttons.XButtonSignal = viper.GetString("XButton.sig")
+	buttons.YButtonAppliance = viper.GetString("YButton.apl")
+	buttons.YButtonSignal = viper.GetString("YButton.sig")
 	return buttons
 }
 
@@ -87,6 +95,18 @@ func main() {
 		stick.On(joystick.BPress, func(data interface{}) {
 			if err := remo.SendSignal(cli, ctx,
 				button.AButtonAppliance, button.AButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+		})
+		stick.On(joystick.XPress, func(data interface{}) {
+			if err := remo.SendSignal(cli, ctx,
+				button.XButtonAppliance, button.XButtonSignal); err != nil {
+				log.Fatal(err)
+			}
+		})
+		stick.On(joystick.YPress, func(data interface{}) {
+			if err := remo.SendSignal(cli, ctx,
+				button.YButtonAppliance, button.YButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
