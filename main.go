@@ -65,7 +65,7 @@ func main() {
 	token := viper.GetString("token")
 
 	r := myremo.NewRemo(token)
-	cli := r.cleint
+	cli := r.Client
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
