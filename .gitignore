@@ -1,1 +1,10 @@
-./remo-joystick
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+remo-joystick
+
+# Test binary, build with `go test -c`
+*.test
