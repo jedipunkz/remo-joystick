@@ -30,12 +30,12 @@ func main() {
 	cli := natureremo.NewClient(token)
 	ctx := context.Background()
 
-	a, err := getAppliance(ctx, cli, aApl)
+	a, err := GetAppliance(ctx, cli, aApl)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s := getSignal(a.Signal, aSig)
+	s := GetSignal(a.Signal, aSig)
 	if s == nil {
 		log.Fatal("signal which you specified not found.")
 	}
