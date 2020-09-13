@@ -38,15 +38,10 @@ func main() {
 	bApl := viper.GetString("ButtonB.apl")
 	bSig := viper.GetString("ButtonB.sig")
 
-	// fmt.Println(bApl)
-	// fmt.Println(bSig)
-	// os.Exit(0)
-
 	cli := natureremo.NewClient(token)
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
-	// stick := joystick.NewDriver(joystickAdaptor, joystick.Xbox360)
 	stick := joystick.NewDriver(joystickAdaptor, "xbox360")
 
 	work := func() {
