@@ -19,6 +19,36 @@ const (
 	confFile = ".remo-joystick"
 )
 
+// Remo is struct for communicating to Natureremo API
+type Remo struct {
+	client *natureremo.Client
+}
+
+// Buttons is struct controller pad buttons
+type Buttons struct {
+	AButtonAppliance string
+	AButtonSignal    string
+	BButtonAppliance string
+	BButtonSignal    string
+}
+
+// NewRemo is contstructor for Nature Remo API
+func NewRemo(token string) *Remo {
+	api := new(Remo)
+	api.client = natureremo.NewClient(token)
+	return api
+}
+
+// NewButtons is contstructor for Controller Pad's Buttons
+func NewButtons() *Buttons {
+	buttons := new(Buttons)
+	buttons.AButtonAppliance = viper.GetString("AButton.apl")
+	buttons.AButtonSignal = viper.GetString("AButton.sig")
+	buttons.BButtonAppliance = viper.GetString("BButton.apl")
+	buttons.BButtonSignal = viper.GetString("BButton.sig")
+	return buttons
+}
+
 func init() {
 	home, err := homedir.Dir()
 	if err != nil {
@@ -37,25 +67,25 @@ func init() {
 
 func main() {
 	token := viper.GetString("token")
-	aApl := viper.GetString("ButtonA.apl")
-	aSig := viper.GetString("ButtonA.sig")
-	bApl := viper.GetString("ButtonB.apl")
-	bSig := viper.GetString("ButtonB.sig")
 
-	cli := natureremo.NewClient(token)
+	cli := NewRemo(token).client
 	ctx := context.Background()
 
 	joystickAdaptor := joystick.NewAdaptor()
 	stick := joystick.NewDriver(joystickAdaptor, "xbox360")
 
+	button := NewButtons()
+
 	work := func() {
 		stick.On(joystick.APress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx, aApl, aSig); err != nil {
+			if err := remo.SendSignal(cli, ctx,
+				button.AButtonAppliance, button.AButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
 		stick.On(joystick.BPress, func(data interface{}) {
-			if err := remo.SendSignal(cli, ctx, bApl, bSig); err != nil {
+			if err := remo.SendSignal(cli, ctx,
+				button.AButtonAppliance, button.AButtonSignal); err != nil {
 				log.Fatal(err)
 			}
 		})
