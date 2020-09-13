@@ -52,12 +52,6 @@ func (r *Remo) GetSignal(ss []*natureremo.Signal, name string) error {
 
 // SendSignal is function to sending signal to remo API
 func (r *Remo) SendSignal(ctx context.Context) error {
-	// if err := r.Client.SignalService.Send(ctx, r.Signal); err != nil {
-	// err := r.Client.SignalService.Send(ctx, r.Signal)
-	// if err != nil {
-
-	// if err := remo.SendSignal(cli, ctx,
-	// 			button.AButtonAppliance, button.AButtonSignal); err != nil {
 	if err := r.Client.SignalService.Send(ctx, r.Signal); err != nil {
 		log.Fatal(err)
 		return err
