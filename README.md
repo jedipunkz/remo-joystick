@@ -17,6 +17,7 @@ $ go get github.com/jedipunkz/remo-joustick.git
 
 ```yaml
 token: <YOUR_NATUREREMO_TOKEN_HERE>
+platform: xbox360 # or dualshock3, dualshock4
 AButton:
   apl: <YOUR_APPLIANCE_NAME>
   sig: <YOUR_SIGNAL_NAME>
