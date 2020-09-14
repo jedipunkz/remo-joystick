@@ -8,6 +8,7 @@ import (
 	myjoystick "remo-joystick/pkg/joystick"
 	myremo "remo-joystick/pkg/remo"
 
+	"github.com/mitchellh/cli"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"gobot.io/x/gobot"
@@ -17,6 +18,7 @@ import (
 
 const (
 	confFile = ".remo-joystick"
+	version  = "0.0.1"
 )
 
 type xbox360Buttons struct {
@@ -115,7 +117,34 @@ func init() {
 	}
 }
 
+type RemoCommand struct{}
+
+func (c *RemoCommand) Help() string {
+	return "Usage: remo-joystic server"
+}
+
+func (c *RemoCommand) Synopsis() string {
+	return "daemon boot"
+}
+
 func main() {
+	c := cli.NewCLI("remo-joystick", version)
+
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"server": func() (cli.Command, error) {
+			return &RemoCommand{}, nil
+		},
+	}
+
+	exitStatus, err := c.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	os.Exit(exitStatus)
+}
+
+func (c *RemoCommand) Run(args []string) int {
 	token := viper.GetString("token")
 	platform := viper.GetString("platform")
 
@@ -233,6 +262,7 @@ func main() {
 			work,
 		)
 		robot.Start()
+		return 0
 
 	case "xbox360":
 		button := newButtonsXbox360()
@@ -272,5 +302,10 @@ func main() {
 			work,
 		)
 		robot.Start()
+		return 0
+
+	default:
+		log.Fatal("remo-joystick does not support your platform")
+		return 1
 	}
 }

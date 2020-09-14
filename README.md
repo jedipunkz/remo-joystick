@@ -20,7 +20,7 @@ Setup $HOME/.remo-joystick.yaml file. This repo includes example yaml file. see 
 ## Boot Process
 
 ```bash
-$ remo-joystick
+$ remo-joystick server
 ```
 
 ## TODO: Dockerize
