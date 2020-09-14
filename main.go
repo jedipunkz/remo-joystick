@@ -17,7 +17,6 @@ import (
 
 const (
 	confFile = ".remo-joystick"
-	platform = "xbox360"
 )
 
 // Buttons is struct controller pad buttons
