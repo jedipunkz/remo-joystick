@@ -21,28 +21,88 @@ const (
 )
 
 // Buttons is struct controller pad buttons
-type Buttons struct {
-	AButtonAppliance string
-	AButtonSignal    string
-	BButtonAppliance string
-	BButtonSignal    string
-	XButtonAppliance string
-	XButtonSignal    string
-	YButtonAppliance string
-	YButtonSignal    string
+type Xbox360Buttons struct {
+	a buttonActions
+	b buttonActions
+	x buttonActions
+	y buttonActions
 }
 
-// NewButtons is contstructor for Controller Pad's Buttons
-func NewButtons() *Buttons {
-	buttons := new(Buttons)
-	buttons.AButtonAppliance = viper.GetString("AButton.apl")
-	buttons.AButtonSignal = viper.GetString("AButton.sig")
-	buttons.BButtonAppliance = viper.GetString("BButton.apl")
-	buttons.BButtonSignal = viper.GetString("BButton.sig")
-	buttons.XButtonAppliance = viper.GetString("XButton.apl")
-	buttons.XButtonSignal = viper.GetString("XButton.sig")
-	buttons.YButtonAppliance = viper.GetString("YButton.apl")
-	buttons.YButtonSignal = viper.GetString("YButton.sig")
+// PS4Buttons is struct for PS4 Dualshock4 Controller Pad's Buttons
+type dualshock4Buttons struct {
+	circle   buttonActions
+	triangle buttonActions
+	square   buttonActions
+	x        buttonActions
+	up       buttonActions
+	down     buttonActions
+	right    buttonActions
+	left     buttonActions
+	r1       buttonActions
+	r2       buttonActions
+	l1       buttonActions
+	l2       buttonActions
+	option   buttonActions
+	share    buttonActions
+}
+
+// PressRelease is struct for Buttons Actions
+type buttonActions struct {
+	press   aplSig
+	release aplSig
+}
+
+// AplSig is struct for Appliance and Signal
+type aplSig struct {
+	appliance string
+	signal    string
+}
+
+// NewButtonsDualshock4 is contstructor for dualshock4 controller pad's buttons
+func NewButtonsDualshock4() *dualshock4Buttons {
+	buttons := new(dualshock4Buttons)
+	buttons.circle.press.appliance = viper.GetString("dualshock4.CirclePress.apl")
+	buttons.triangle.press.appliance = viper.GetString("dualshock4.TrianglePress.apl")
+	buttons.square.press.appliance = viper.GetString("dualshock4.SquarePress.apl")
+	buttons.x.press.appliance = viper.GetString("dualshock4.XPress.apl")
+	buttons.up.press.appliance = viper.GetString("dualshock4.UpPress.apl")
+	buttons.down.press.appliance = viper.GetString("dualshock4.DownPress.apl")
+	buttons.right.press.appliance = viper.GetString("dualshock4.RightPress.apl")
+	buttons.left.press.appliance = viper.GetString("dualshock4.LeftPress.apl")
+	buttons.r1.press.appliance = viper.GetString("dualshock4.R1Press.apl")
+	buttons.r2.press.appliance = viper.GetString("dualshock4.R1Press.apl")
+	buttons.l1.press.appliance = viper.GetString("dualshock4.L1Press.apl")
+	buttons.l2.press.appliance = viper.GetString("dualshock4.L1Press.apl")
+	buttons.option.press.appliance = viper.GetString("dualshock4.OptionPress.apl")
+	buttons.share.press.appliance = viper.GetString("dualshock4.SharePress.apl")
+	buttons.circle.press.signal = viper.GetString("dualshock4.CirclePress.sig")
+	buttons.triangle.press.signal = viper.GetString("dualshock4.TrianglePress.sig")
+	buttons.square.press.signal = viper.GetString("dualshock4.SquarePress.sig")
+	buttons.x.press.signal = viper.GetString("dualshock4.XPress.sig")
+	buttons.up.press.signal = viper.GetString("dualshock4.UpPress.sig")
+	buttons.down.press.signal = viper.GetString("dualshock4.DownPress.sig")
+	buttons.right.press.signal = viper.GetString("dualshock4.RightPress.sig")
+	buttons.left.press.signal = viper.GetString("dualshock4.LeftPress.sig")
+	buttons.r1.press.signal = viper.GetString("dualshock4.R1Press.sig")
+	buttons.r2.press.signal = viper.GetString("dualshock4.R1Press.sig")
+	buttons.l1.press.signal = viper.GetString("dualshock4.L1Press.sig")
+	buttons.l2.press.signal = viper.GetString("dualshock4.L1Press.sig")
+	buttons.option.press.signal = viper.GetString("dualshock4.OptionPress.sig")
+	buttons.share.press.signal = viper.GetString("dualshock4.SharePress.sig")
+	return buttons
+}
+
+// NewButtonsXbox360 is constructor for Xbox360 controller pad's buttons
+func NewButtonsXbox360() *Xbox360Buttons {
+	buttons := new(Xbox360Buttons)
+	buttons.a.press.appliance = viper.GetString("xbox360.Apress.apl")
+	buttons.a.press.signal = viper.GetString("xbox.Apress.sig")
+	buttons.b.press.appliance = viper.GetString("xbox360.Bpress.apl")
+	buttons.b.press.signal = viper.GetString("xbox.Xpress.sig")
+	buttons.x.press.appliance = viper.GetString("xbox360.Xpress.apl")
+	buttons.x.press.signal = viper.GetString("xbox.Cpress.sig")
+	buttons.y.press.appliance = viper.GetString("xbox360.Ypress.apl")
+	buttons.y.press.signal = viper.GetString("xbox.Ypress.sig")
 	return buttons
 }
 
@@ -61,7 +121,6 @@ func init() {
 		fmt.Println("Using config file: ", viper.ConfigFileUsed())
 	}
 }
-
 func main() {
 	token := viper.GetString("token")
 	platform := viper.GetString("platform")
@@ -71,63 +130,243 @@ func main() {
 
 	j := mygobot.NewGobot(platform)
 
-	button := NewButtons()
+	switch platform {
+	case "dualshock4":
+		button := NewButtonsDualshock4()
+		work := func() {
+			j.Stick.On(joystick.CirclePress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.circle.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.circle.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
 
-	work := func() {
-		j.Stick.On(joystick.APress, func(data interface{}) {
-			if err := r.GetAppliance(ctx, button.AButtonAppliance); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.GetSignal(r.Appliance.Signals, button.AButtonSignal); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.SendSignal(ctx); err != nil {
-				fmt.Println(err)
-				log.Fatal(err)
-			}
-		})
-		j.Stick.On(joystick.BPress, func(data interface{}) {
-			if err := r.GetAppliance(ctx, button.BButtonAppliance); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.GetSignal(r.Appliance.Signals, button.BButtonSignal); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.SendSignal(ctx); err != nil {
-				fmt.Println(err)
-				log.Fatal(err)
-			}
-		})
-		j.Stick.On(joystick.XPress, func(data interface{}) {
-			if err := r.GetAppliance(ctx, button.XButtonAppliance); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.GetSignal(r.Appliance.Signals, button.XButtonSignal); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.SendSignal(ctx); err != nil {
-				fmt.Println(err)
-				log.Fatal(err)
-			}
-		})
-		j.Stick.On(joystick.YPress, func(data interface{}) {
-			if err := r.GetAppliance(ctx, button.YButtonAppliance); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.GetSignal(r.Appliance.Signals, button.YButtonSignal); err != nil {
-				log.Fatal(err)
-			}
-			if err := r.SendSignal(ctx); err != nil {
-				fmt.Println(err)
-				log.Fatal(err)
-			}
-		})
+			j.Stick.On(joystick.TrianglePress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.triangle.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.triangle.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.SquarePress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.square.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.square.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.XPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.x.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.x.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.UpPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.up.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.up.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.DownPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.down.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.down.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.RightPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.right.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.right.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.LeftPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.left.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.left.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.R1Press, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.r1.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.r1.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.R2Press, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.r2.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.r2.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.L1Press, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.l1.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.l1.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.L2Press, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.l2.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.l2.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.OptionsPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.option.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.option.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.SharePress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.share.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.share.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+		}
+
+		robot := gobot.NewRobot("joystickBot",
+			[]gobot.Connection{j.JoystickAdaptor},
+			[]gobot.Device{j.Stick},
+			work,
+		)
+		robot.Start()
+
+	case "xbox360":
+		button := NewButtonsXbox360()
+		work := func() {
+			j.Stick.On(joystick.APress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.a.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.a.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.BPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.b.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.b.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.XPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.x.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.x.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+
+			j.Stick.On(joystick.YPress, func(data interface{}) {
+				if err := r.GetAppliance(ctx, button.y.press.appliance); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.GetSignal(r.Appliance.Signals, button.y.press.signal); err != nil {
+					log.Fatal(err)
+				}
+				if err := r.SendSignal(ctx); err != nil {
+					log.Fatal(err)
+				}
+			})
+		}
+
+		robot := gobot.NewRobot("joystickBot",
+			[]gobot.Connection{j.JoystickAdaptor},
+			[]gobot.Device{j.Stick},
+			work,
+		)
+		robot.Start()
 	}
-
-	robot := gobot.NewRobot("joystickBot",
-		[]gobot.Connection{j.JoystickAdaptor},
-		[]gobot.Device{j.Stick},
-		work,
-	)
-	robot.Start()
 }
