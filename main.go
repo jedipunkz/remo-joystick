@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	mygobot "remo-joystick/pkg/gobot"
 	myremo "remo-joystick/pkg/remo"
 
 	"github.com/mitchellh/go-homedir"
@@ -63,17 +64,17 @@ func init() {
 
 func main() {
 	token := viper.GetString("token")
+	platform := viper.GetString("platform")
 
 	r := myremo.NewRemo(token)
 	ctx := context.Background()
 
-	joystickAdaptor := joystick.NewAdaptor()
-	stick := joystick.NewDriver(joystickAdaptor, platform)
+	j := mygobot.NewGobot(platform)
 
 	button := NewButtons()
 
 	work := func() {
-		stick.On(joystick.APress, func(data interface{}) {
+		j.Stick.On(joystick.APress, func(data interface{}) {
 			if err := r.GetAppliance(ctx, button.AButtonAppliance); err != nil {
 				log.Fatal(err)
 			}
@@ -85,7 +86,7 @@ func main() {
 				log.Fatal(err)
 			}
 		})
-		stick.On(joystick.BPress, func(data interface{}) {
+		j.Stick.On(joystick.BPress, func(data interface{}) {
 			if err := r.GetAppliance(ctx, button.BButtonAppliance); err != nil {
 				log.Fatal(err)
 			}
@@ -97,7 +98,7 @@ func main() {
 				log.Fatal(err)
 			}
 		})
-		stick.On(joystick.XPress, func(data interface{}) {
+		j.Stick.On(joystick.XPress, func(data interface{}) {
 			if err := r.GetAppliance(ctx, button.XButtonAppliance); err != nil {
 				log.Fatal(err)
 			}
@@ -109,7 +110,7 @@ func main() {
 				log.Fatal(err)
 			}
 		})
-		stick.On(joystick.YPress, func(data interface{}) {
+		j.Stick.On(joystick.YPress, func(data interface{}) {
 			if err := r.GetAppliance(ctx, button.YButtonAppliance); err != nil {
 				log.Fatal(err)
 			}
@@ -124,8 +125,8 @@ func main() {
 	}
 
 	robot := gobot.NewRobot("joystickBot",
-		[]gobot.Connection{joystickAdaptor},
-		[]gobot.Device{stick},
+		[]gobot.Connection{j.JoystickAdaptor},
+		[]gobot.Device{j.Stick},
 		work,
 	)
 	robot.Start()
