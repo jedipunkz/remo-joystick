@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	mygobot "remo-joystick/pkg/gobot"
+	myjoystick "remo-joystick/pkg/joystick"
 	myremo "remo-joystick/pkg/remo"
 
 	"github.com/mitchellh/go-homedir"
@@ -122,7 +122,7 @@ func main() {
 	r := myremo.NewRemo(token)
 	ctx := context.Background()
 
-	j := mygobot.NewGobot(platform)
+	j := myjoystick.NewJoystick(platform)
 
 	switch platform {
 	case "dualshock4":
