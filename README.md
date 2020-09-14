@@ -2,7 +2,7 @@
 
 ## Description
 
-🏡🎮 Remo-Joystick 🎮🏡 enable you to controll home appliance and devices via natureremo with Joystick such as Xbox360, Dualshock4. So no need to talk to Alexa.
+🏡🎮 Remo-Joystick 🎮🏡 enable you to controll home appliances and devices via natureremo with Joystick such as Xbox360, Dualshock4. So no need to talk to Alexa.
 
 ## Pre-Requirement(s)
 
