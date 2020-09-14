@@ -2,7 +2,7 @@
 
 ## Description
 
-No need to talk to Alexa. Remo-Joystick make you enable to controll natureremo devices with Joystick such as Xbox360, Dualshock4 Controll Pads.
+🏡🎮 Remo-Joystick 🎮🏡 make you enable to controll natureremo devices with Joystick such as Xbox360, Dualshock4. So no need to talk to Alexa.
 
 ## Pre-Requirement(s)
 
