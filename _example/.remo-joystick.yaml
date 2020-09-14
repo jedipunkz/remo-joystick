@@ -1,0 +1,64 @@
+token: ***************** # Nature Remo API Token. get Token at https://swagger.nature.global/
+platform: dualshock4 # or dualshock3, xbox360
+xbox360:
+  APress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  BPress:
+    apl: ジェダイの照明
+    sig: "off"
+  XPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  YPress: 
+    apl: ジェダイの照明
+    sig: "on"
+dualshock4:
+  CirclePress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  TrianglePress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  SquarePress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  XPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  UpPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  DownPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  LeftPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  RightPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  SharePress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  OptionPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  R1Press:
+    apl: ジェダイの扇風機
+    sig: on.off
+  R2Press:
+    apl: ジェダイの扇風機
+    sig: on.off
+  L1Press:
+    apl: ジェダイの扇風機
+    sig: on.off
+  L2Press:
+    apl: ジェダイの扇風機
+    sig: on.off
+  OptionPress:
+    apl: ジェダイの扇風機
+    sig: on.off
+  SharePress:
+    apl: ジェダイの扇風機
+    sig: on.off
