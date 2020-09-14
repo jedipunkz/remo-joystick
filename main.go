@@ -17,18 +17,15 @@ import (
 
 const (
 	confFile = ".remo-joystick"
-	platform = "xbox360"
 )
 
-// Buttons is struct controller pad buttons
-type Xbox360Buttons struct {
+type xbox360Buttons struct {
 	a buttonActions
 	b buttonActions
 	x buttonActions
 	y buttonActions
 }
 
-// PS4Buttons is struct for PS4 Dualshock4 Controller Pad's Buttons
 type dualshock4Buttons struct {
 	circle   buttonActions
 	triangle buttonActions
@@ -46,20 +43,17 @@ type dualshock4Buttons struct {
 	share    buttonActions
 }
 
-// PressRelease is struct for Buttons Actions
 type buttonActions struct {
 	press   aplSig
 	release aplSig
 }
 
-// AplSig is struct for Appliance and Signal
 type aplSig struct {
 	appliance string
 	signal    string
 }
 
-// NewButtonsDualshock4 is contstructor for dualshock4 controller pad's buttons
-func NewButtonsDualshock4() *dualshock4Buttons {
+func newButtonsDualshock4() *dualshock4Buttons {
 	buttons := new(dualshock4Buttons)
 	buttons.circle.press.appliance = viper.GetString("dualshock4.CirclePress.apl")
 	buttons.triangle.press.appliance = viper.GetString("dualshock4.TrianglePress.apl")
@@ -92,9 +86,8 @@ func NewButtonsDualshock4() *dualshock4Buttons {
 	return buttons
 }
 
-// NewButtonsXbox360 is constructor for Xbox360 controller pad's buttons
-func NewButtonsXbox360() *Xbox360Buttons {
-	buttons := new(Xbox360Buttons)
+func newButtonsXbox360() *xbox360Buttons {
+	buttons := new(xbox360Buttons)
 	buttons.a.press.appliance = viper.GetString("xbox360.Apress.apl")
 	buttons.a.press.signal = viper.GetString("xbox.Apress.sig")
 	buttons.b.press.appliance = viper.GetString("xbox360.Bpress.apl")
@@ -132,7 +125,7 @@ func main() {
 
 	switch platform {
 	case "dualshock4":
-		button := NewButtonsDualshock4()
+		button := newButtonsDualshock4()
 		work := func() {
 			j.Stick.On(joystick.CirclePress, func(data interface{}) {
 				if err := r.GetAppliance(ctx, button.circle.press.appliance); err != nil {
@@ -311,7 +304,7 @@ func main() {
 		robot.Start()
 
 	case "xbox360":
-		button := NewButtonsXbox360()
+		button := newButtonsXbox360()
 		work := func() {
 			j.Stick.On(joystick.APress, func(data interface{}) {
 				if err := r.GetAppliance(ctx, button.a.press.appliance); err != nil {
