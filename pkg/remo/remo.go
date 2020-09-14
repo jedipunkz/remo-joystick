@@ -50,12 +50,29 @@ func (r *Remo) GetSignal(ss []*natureremo.Signal, name string) error {
 	return errors.New("Signal Not Found.")
 }
 
-// SendSignal is function to sending signal to remo API
+// SendSignal is function to send signal to remo API
 func (r *Remo) SendSignal(ctx context.Context) error {
 	if err := r.Client.SignalService.Send(ctx, r.Signal); err != nil {
 		log.Fatal(err)
 		return err
 	}
 
+	return nil
+}
+
+// SendSignalByAplSig is function to send signal by appliance and signal
+func (r *Remo) SendSignalByAplSig(apl, sig string, ctx context.Context) error {
+	if err := r.GetAppliance(ctx, apl); err != nil {
+		log.Fatal(err)
+		return err
+	}
+	if err := r.GetSignal(r.Appliance.Signals, sig); err != nil {
+		log.Fatal(err)
+		return err
+	}
+	if err := r.SendSignal(ctx); err != nil {
+		log.Fatal(err)
+		return err
+	}
 	return nil
 }
