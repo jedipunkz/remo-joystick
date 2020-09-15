@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	myjoystick "remo-joystick/pkg/joystick"
-	myremo "remo-joystick/pkg/remo"
+	myjoystick "github.com/jedipunkz/mygobot/pkg/joystick"
+	myremo "github.com/jedipunkz/myremo/pkg/remo"
 
 	"github.com/mitchellh/cli"
 	"github.com/mitchellh/go-homedir"
@@ -117,13 +117,13 @@ func init() {
 	}
 }
 
-type RemoCommand struct{}
+type remoCommand struct{}
 
-func (c *RemoCommand) Help() string {
+func (c *remoCommand) Help() string {
 	return "Usage: remo-joystic server"
 }
 
-func (c *RemoCommand) Synopsis() string {
+func (c *remoCommand) Synopsis() string {
 	return "daemon boot"
 }
 
@@ -133,7 +133,7 @@ func main() {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"server": func() (cli.Command, error) {
-			return &RemoCommand{}, nil
+			return &remoCommand{}, nil
 		},
 	}
 
@@ -144,7 +144,7 @@ func main() {
 	os.Exit(exitStatus)
 }
 
-func (c *RemoCommand) Run(args []string) int {
+func (c *remoCommand) Run(args []string) int {
 	token := viper.GetString("token")
 	platform := viper.GetString("platform")
 
